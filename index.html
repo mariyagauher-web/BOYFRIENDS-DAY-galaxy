@@ -231,6 +231,44 @@ button{
     to{box-shadow:0 0 18px rgba(216,180,123,.42),0 0 45px rgba(216,180,123,.20),inset 0 0 20px rgba(255,255,255,.06)}
 }
 
+<<<<<<< HEAD
+=======
+
+/* ================= SPECIAL CUTOUT ================= */
+/*
+   The AS cutout belongs in the large empty right-hand area of the
+   SPECIAL section (the area marked in the supplied reference image).
+   It is intentionally positioned from the section itself rather than
+   from the viewport, so it stays attached to this section while scrolling.
+*/
+.special-cutout{
+    position:absolute;
+    top:54%;
+    left:58%;
+    right:auto;
+    width:clamp(360px,34vw,470px);
+    max-width:46vw;
+    height:auto;
+    z-index:2;
+    pointer-events:none;
+    user-select:none;
+    opacity:.96;
+    filter:drop-shadow(0 18px 28px rgba(0,0,0,.16));
+    transform:translate(-50%,-50%);
+    animation:specialCutoutFloat 5s ease-in-out infinite;
+}
+
+.quality-wrap{
+    position:relative;
+    z-index:1;
+}
+
+@keyframes specialCutoutFloat{
+    0%,100%{transform:translate(-50%,-50%) rotate(0deg);}
+    50%{transform:translate(-50%,calc(-50% - 8px)) rotate(-1deg);}
+}
+
+>>>>>>> 334a089 (cut out add kiya)
 /* ================= GLOBAL ================= */
 
 section{
@@ -1202,6 +1240,18 @@ section{
         gap:40px;
     }
 
+<<<<<<< HEAD
+=======
+    .special-cutout{
+        width:min(78vw,330px);
+        max-width:none;
+        top:56%;
+        left:50%;
+        right:auto;
+        opacity:.94;
+    }
+
+>>>>>>> 334a089 (cut out add kiya)
     .quality-grid{
         grid-template-columns:1fr 1fr;
     }
@@ -1274,6 +1324,14 @@ section{
 
 @media(max-width:500px){
 
+<<<<<<< HEAD
+=======
+    .special-cutout{
+        width:min(82vw,300px);
+        top:55%;
+    }
+
+>>>>>>> 334a089 (cut out add kiya)
     .lock-content h1{
         font-size:60px;
     }
@@ -1434,6 +1492,11 @@ section{
 
     <div class="glow"></div>
 
+<<<<<<< HEAD
+=======
+    <img class="special-cutout" src="as-cutout.png" alt="" aria-hidden="true">
+
+>>>>>>> 334a089 (cut out add kiya)
     <div class="quality-wrap">
 
         <div>
@@ -2528,4 +2591,8 @@ document.querySelectorAll("img").forEach(img=>{
 </script>
 
 </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> 334a089 (cut out add kiya)

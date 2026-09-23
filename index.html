@@ -1,0 +1,2531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For My Favourite Boy ❤️</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Sacramento&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+<style>
+:root{
+    --bg:#07111d;
+    --bg2:#0d1c2d;
+    --cream:#f7ead7;
+    --gold:#d8b47b;
+    --rose:#d99a9a;
+    --white:#fffaf4;
+    --muted:#b8b8bc;
+    --card:rgba(255,255,255,.075);
+    --border:rgba(255,255,255,.16);
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:var(--bg);
+    color:var(--white);
+    font-family:Inter,sans-serif;
+    overflow-x:hidden;
+}
+
+body.locked{
+    overflow:hidden;
+    position:fixed;
+    width:100%;
+    height:100%;
+    touch-action:none;
+    overscroll-behavior:none;
+}
+
+body.locked > section{
+    visibility:hidden;
+}
+
+body.locked .nav,
+body.locked .music-player,
+body.locked .back-top{
+    visibility:hidden;
+    pointer-events:none;
+}
+
+a{
+    color:inherit;
+    text-decoration:none;
+}
+
+button{
+    font-family:inherit;
+}
+
+/* ================= CURSOR ================= */
+
+.cursor{
+    width:18px;
+    height:18px;
+    border:1px solid rgba(255,255,255,.8);
+    border-radius:50%;
+    position:fixed;
+    pointer-events:none;
+    z-index:99999;
+    transform:translate(-50%,-50%);
+    transition:width .2s,height .2s,background .2s;
+    mix-blend-mode:difference;
+}
+
+.cursor-dot{
+    width:4px;
+    height:4px;
+    background:white;
+    border-radius:50%;
+    position:fixed;
+    pointer-events:none;
+    z-index:100000;
+    transform:translate(-50%,-50%);
+}
+
+/* ================= MUSIC ================= */
+
+.music-player{
+    position:fixed;
+    bottom:22px;
+    left:22px;
+    z-index:5000;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:9px 14px 9px 9px;
+    border:1px solid rgba(255,255,255,.2);
+    background:rgba(5,12,22,.65);
+    backdrop-filter:blur(16px);
+    border-radius:50px;
+    box-shadow:0 10px 40px rgba(0,0,0,.3);
+}
+
+.music-btn{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,.35);
+    background:rgba(255,255,255,.08);
+    color:white;
+    cursor:pointer;
+    display:grid;
+    place-items:center;
+    font-size:15px;
+}
+
+.music-info{
+    font-size:10px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+}
+
+.music-info span{
+    display:block;
+    color:#aaa;
+    margin-top:3px;
+    font-size:8px;
+}
+
+.equalizer{
+    display:flex;
+    gap:3px;
+    align-items:flex-end;
+    height:13px;
+}
+
+.equalizer i{
+    display:block;
+    width:2px;
+    height:5px;
+    background:var(--gold);
+    animation:bars .7s infinite alternate;
+}
+
+.equalizer i:nth-child(2){animation-delay:.15s}
+.equalizer i:nth-child(3){animation-delay:.3s}
+.equalizer i:nth-child(4){animation-delay:.45s}
+
+.music-player.paused .equalizer i{
+    animation-play-state:paused;
+    height:4px;
+}
+
+@keyframes bars{
+    from{height:3px}
+    to{height:13px}
+}
+
+/* ================= NAV ================= */
+
+.nav{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:4000;
+    display:flex;
+    align-items:center;
+    gap:5px;
+    padding:7px;
+    border:1px solid rgba(255,255,255,.22);
+    background:rgba(5,12,22,.58);
+    backdrop-filter:blur(18px);
+    border-radius:100px;
+    box-shadow:
+        0 0 12px rgba(216,180,123,.28),
+        0 0 30px rgba(216,180,123,.16),
+        inset 0 0 18px rgba(255,255,255,.035);
+    animation:navGlow 2.8s ease-in-out infinite alternate;
+}
+
+.nav::before{
+    content:"";
+    position:absolute;
+    inset:-2px;
+    border-radius:inherit;
+    padding:1px;
+    background:linear-gradient(90deg,transparent,rgba(216,180,123,.8),rgba(255,255,255,.55),rgba(216,180,123,.8),transparent);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+    mask-composite:exclude;
+    opacity:.7;
+    pointer-events:none;
+}
+
+.nav a{
+    position:relative;
+    z-index:1;
+    font-size:10px;
+    letter-spacing:1px;
+    padding:10px 15px;
+    color:#c7c7c9;
+    border-radius:50px;
+    transition:.3s;
+}
+
+.nav a:hover,
+.nav a.active{
+    background:rgba(216,180,123,.14);
+    color:white;
+    text-shadow:0 0 12px rgba(255,255,255,.65);
+    box-shadow:0 0 18px rgba(216,180,123,.2);
+}
+
+@keyframes navGlow{
+    from{box-shadow:0 0 12px rgba(216,180,123,.22),0 0 30px rgba(216,180,123,.10),inset 0 0 18px rgba(255,255,255,.03)}
+    to{box-shadow:0 0 18px rgba(216,180,123,.42),0 0 45px rgba(216,180,123,.20),inset 0 0 20px rgba(255,255,255,.06)}
+}
+
+/* ================= GLOBAL ================= */
+
+section{
+    position:relative;
+    min-height:100vh;
+    padding:110px 7vw;
+    overflow:hidden;
+}
+
+.section-tag{
+    color:var(--gold);
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:4px;
+    margin-bottom:15px;
+}
+
+.section-title{
+    font-family:"Cormorant Garamond",serif;
+    font-size:clamp(45px,7vw,95px);
+    line-height:.85;
+    font-weight:500;
+}
+
+.section-title em{
+    font-family:Sacramento,cursive;
+    color:#e9bcbc;
+    font-style:normal;
+}
+
+.section-sub{
+    color:#aaa;
+    max-width:520px;
+    line-height:1.8;
+    margin-top:24px;
+    font-size:14px;
+}
+
+.glow{
+    position:absolute;
+    width:450px;
+    height:450px;
+    border-radius:50%;
+    background:rgba(110,160,210,.1);
+    filter:blur(100px);
+    pointer-events:none;
+}
+
+/* ================= LOCK SCREEN ================= */
+
+#lockScreen{
+    position:fixed;
+    inset:0;
+    z-index:9000;
+    overflow:hidden;
+    overscroll-behavior:none;
+    touch-action:none;
+    background:
+        radial-gradient(circle at 50% 30%,rgba(216,180,123,.10),transparent 32%),
+        radial-gradient(circle at 15% 85%,rgba(217,154,154,.08),transparent 28%),
+        #07111d;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.lock-content{
+    text-align:center;
+    width:min(90%,420px);
+}
+
+.lock-small{
+    font-size:11px;
+    letter-spacing:5px;
+    text-transform:uppercase;
+    color:#c6b69e;
+}
+
+.lock-content h1{
+    font-family:Sacramento,cursive;
+    font-size:75px;
+    font-weight:400;
+    margin:8px 0;
+}
+
+.lock-content p{
+    color:#aaa;
+    font-size:13px;
+    margin-bottom:28px;
+}
+
+.keypad{
+    width:285px;
+    margin:auto;
+    padding:22px;
+    border:1px solid rgba(255,255,255,.22);
+    border-radius:28px;
+    background:rgba(255,255,255,.07);
+    backdrop-filter:blur(20px);
+    box-shadow:0 30px 100px rgba(0,0,0,.4);
+}
+
+.code-display{
+    height:45px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+}
+
+.dot{
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    border:1px solid #d9c2a1;
+}
+
+.dot.active{
+    background:#d9c2a1;
+    box-shadow:0 0 15px #d9c2a1;
+}
+
+.keys{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+}
+
+.key{
+    aspect-ratio:1;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,.22);
+    background:linear-gradient(145deg,rgba(255,255,255,.15),rgba(255,255,255,.03));
+    color:white;
+    font-size:17px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.key:hover{
+    transform:translateY(-3px) scale(1.05);
+    border-color:#e4c79b;
+}
+
+.key:active{
+    transform:scale(.92);
+}
+
+.lock-error{
+    height:20px;
+    margin-top:15px;
+    color:#df9d9d;
+    font-size:11px;
+}
+
+/* ================= HERO ================= */
+
+.hero{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    background:
+        linear-gradient(90deg,rgba(2,8,15,.9),rgba(2,8,15,.35)),
+        url("assets/bg.jpg") center/cover fixed;
+}
+
+.hero::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+        radial-gradient(circle at 70% 30%,rgba(215,174,118,.13),transparent 30%),
+        linear-gradient(transparent 70%,var(--bg));
+    pointer-events:none;
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+    max-width:850px;
+}
+
+.hero-kicker{
+    color:#d5bd9a;
+    letter-spacing:6px;
+    text-transform:uppercase;
+    font-size:11px;
+    margin-bottom:22px;
+}
+
+.hero h1{
+    font-family:"Cormorant Garamond",serif;
+    font-weight:400;
+    font-size:clamp(65px,10vw,145px);
+    line-height:.76;
+}
+
+.hero h1 span{
+    display:block;
+    font-family:Sacramento,cursive;
+    color:#e5b7b7;
+    font-size:1.1em;
+    margin-left:13vw;
+}
+
+.hero-desc{
+    max-width:440px;
+    margin-top:38px;
+    color:#d1d1d3;
+    line-height:1.8;
+    font-size:14px;
+}
+
+.scroll-hint{
+    position:absolute;
+    bottom:35px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:9px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    color:#aaa;
+}
+
+.scroll-line{
+    width:1px;
+    height:50px;
+    background:linear-gradient(transparent,#fff);
+    margin:10px auto 0;
+    animation:scrollLine 1.5s infinite;
+}
+
+@keyframes scrollLine{
+    50%{transform:scaleY(.4);transform-origin:top}
+}
+
+/* ================= QUALITIES ================= */
+
+.qualities{
+    background:
+        radial-gradient(circle at 15% 30%,rgba(210,164,105,.09),transparent 25%),
+        var(--bg);
+}
+
+.quality-wrap{
+    display:grid;
+    grid-template-columns:.8fr 1.2fr;
+    gap:70px;
+    align-items:center;
+    max-width:1250px;
+    margin:auto;
+}
+
+.quality-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+.quality-card{
+    min-height:220px;
+    padding:28px;
+    border:1px solid var(--border);
+    background:var(--card);
+    backdrop-filter:blur(15px);
+    transition:.4s;
+    position:relative;
+    overflow:hidden;
+}
+
+.quality-card:hover{
+    transform:translateY(-10px);
+    border-color:rgba(216,180,123,.5);
+}
+
+.quality-card::before{
+    content:"";
+    position:absolute;
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    background:rgba(216,180,123,.1);
+    filter:blur(30px);
+    top:-30px;
+    right:-30px;
+}
+
+.q-icon{
+    font-size:28px;
+    color:#dfc295;
+}
+
+.quality-card h3{
+    font-family:"Cormorant Garamond",serif;
+    font-size:28px;
+    margin:22px 0 10px;
+}
+
+.quality-card p{
+    color:#aaa;
+    font-size:12px;
+    line-height:1.7;
+}
+
+/* ================= GALLERY ================= */
+
+.gallery{
+    background:
+        linear-gradient(rgba(3,9,16,.65),rgba(3,9,16,.8)),
+        url("assets/gallery-bg.jpg") center/cover;
+}
+
+.gallery-head{
+    text-align:center;
+    margin-bottom:55px;
+}
+
+.photo-grid{
+    max-width:1200px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:repeat(12,1fr);
+    grid-auto-rows:170px;
+    gap:15px;
+}
+
+.photo{
+    position:relative;
+    overflow:hidden;
+    border:5px solid #f4eee6;
+    box-shadow:0 15px 35px rgba(0,0,0,.35);
+    background:#222;
+    cursor:pointer;
+}
+
+.photo:nth-child(1){grid-column:span 5;grid-row:span 2;transform:rotate(-2deg)}
+.photo:nth-child(2){grid-column:span 3;grid-row:span 2;transform:rotate(2deg)}
+.photo:nth-child(3){grid-column:span 4;grid-row:span 1;transform:rotate(-1deg)}
+.photo:nth-child(4){grid-column:span 4;grid-row:span 1;transform:rotate(2deg)}
+.photo:nth-child(5){grid-column:span 4;grid-row:span 2;transform:rotate(-2deg)}
+.photo:nth-child(6){grid-column:span 4;grid-row:span 2;transform:rotate(1deg)}
+.photo:nth-child(7){grid-column:span 4;grid-row:span 2;transform:rotate(-1deg)}
+
+.photo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    transition:1s;
+}
+
+.photo:hover img{
+    transform:scale(1.08);
+}
+
+/* ================= HIS WORLD ================= */
+
+.his-world{
+    background:#091523;
+}
+
+.world-head{
+    max-width:600px;
+    margin-bottom:45px;
+}
+
+.horizontal-gallery{
+    display:flex;
+    gap:22px;
+    width:max-content;
+    padding:25px 0 45px;
+}
+
+.world-card{
+    width:280px;
+    height:420px;
+    border-radius:180px 180px 20px 20px;
+    overflow:hidden;
+    position:relative;
+    border:1px solid rgba(255,255,255,.2);
+    flex-shrink:0;
+}
+
+.world-card img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.world-card::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(transparent 50%,rgba(0,0,0,.7));
+}
+
+.world-card span{
+    position:absolute;
+    z-index:2;
+    bottom:20px;
+    left:20px;
+    font-family:"Cormorant Garamond",serif;
+    font-size:24px;
+}
+
+/* ================= LETTER ================= */
+
+.letter{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+        linear-gradient(rgba(16,9,6,.62),rgba(16,9,6,.7)),
+        url("assets/letter-bg.jpg") center/cover;
+}
+
+.paper{
+    width:min(900px,90%);
+    padding:75px 80px;
+    background:
+        linear-gradient(90deg,rgba(0,0,0,.05),transparent 10%,transparent 90%,rgba(0,0,0,.05)),
+        #e9d5ad;
+    color:#352b22;
+    position:relative;
+    box-shadow:0 30px 80px rgba(0,0,0,.5);
+    transform:rotate(-1deg);
+}
+
+.paper::before,
+.paper::after{
+    content:"";
+    position:absolute;
+    width:90px;
+    height:90px;
+    border:2px solid rgba(70,45,25,.2);
+}
+
+.paper::before{
+    left:20px;
+    top:20px;
+    border-right:0;
+    border-bottom:0;
+}
+
+.paper::after{
+    right:20px;
+    bottom:20px;
+    border-left:0;
+    border-top:0;
+}
+
+.paper-title{
+    font-family:Sacramento,cursive;
+    font-size:55px;
+    margin-bottom:30px;
+}
+
+.paper p{
+    font-family:"Cormorant Garamond",serif;
+    font-size:22px;
+    line-height:1.6;
+    max-width:700px;
+}
+
+.signature{
+    text-align:right;
+    margin-top:35px;
+    font-family:Sacramento,cursive;
+    font-size:38px;
+}
+
+/* ================= REASONS ================= */
+
+.reasons{
+    background:#f3e5d1;
+    color:#352b28;
+    display:flex;
+    align-items:center;
+}
+
+.reasons-inner{
+    width:100%;
+    max-width:1250px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:minmax(280px,.9fr) minmax(360px,1.1fr);
+    gap:clamp(45px,7vw,110px);
+    align-items:center;
+}
+
+.reasons-copy .section-tag{
+    color:#92704d;
+}
+
+.reasons-copy .section-title{
+    color:#342b28;
+}
+
+/* scratch card */
+.scratch-wrap{
+    margin-top:38px;
+    width:min(100%,420px);
+}
+
+.scratch-card{
+    position:relative;
+    min-height:190px;
+    border-radius:22px;
+    overflow:hidden;
+    background:linear-gradient(145deg,#fffaf1,#ead3c2);
+    border:1px solid rgba(89,57,43,.14);
+    box-shadow:0 20px 45px rgba(70,45,30,.16);
+    cursor:crosshair;
+    user-select:none;
+    touch-action:none;
+}
+
+.scratch-message{
+    position:absolute;
+    inset:0;
+    display:grid;
+    place-items:center;
+    padding:25px;
+    text-align:center;
+    color:#5b4035;
+    font-family:"Cormorant Garamond",serif;
+}
+
+.scratch-message strong{
+    display:block;
+    font-family:Sacramento,cursive;
+    font-size:64px;
+    line-height:.9;
+    color:#a66e6e;
+    margin-bottom:12px;
+}
+
+.scratch-message span{
+    display:block;
+    font-size:23px;
+}
+
+#scratchCanvas{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:2;
+    touch-action:none;
+}
+
+.scratch-hint{
+    margin-top:12px;
+    text-align:center;
+    color:#8b6e5e;
+    font-size:10px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+}
+
+/* polaroid + music showpiece */
+.reason-showcase{
+    position:relative;
+    min-height:540px;
+    display:grid;
+    place-items:center;
+}
+
+.polaroid{
+    position:relative;
+    width:min(390px,82vw);
+    padding:16px 16px 58px;
+    background:#fffaf1;
+    box-shadow:0 24px 55px rgba(65,42,30,.24);
+    transform:rotate(-3deg);
+}
+
+.polaroid::before{
+    content:"";
+    position:absolute;
+    width:120px;
+    height:35px;
+    top:-17px;
+    left:50%;
+    transform:translateX(-50%) rotate(-2deg);
+    background:#dca9a0;
+    opacity:.9;
+}
+
+.polaroid-photo{
+    width:100%;
+    height:390px;
+    display:block;
+    object-fit:contain;
+    background:#ead9cb;
+}
+
+.polaroid-caption{
+    position:absolute;
+    left:20px;
+    bottom:15px;
+    font-family:Sacramento,cursive;
+    color:#725044;
+    font-size:27px;
+}
+
+.playlist-showpiece{
+    position:absolute;
+    right:2%;
+    bottom:5%;
+    width:180px;
+    padding:12px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    border-radius:18px;
+    background:rgba(255,250,241,.94);
+    border:1px solid rgba(111,76,61,.16);
+    box-shadow:0 18px 35px rgba(65,42,30,.18);
+    transform:rotate(4deg);
+    z-index:3;
+}
+
+.playlist-icon{
+    width:42px;
+    height:42px;
+    flex:0 0 42px;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    background:#c98f8c;
+    color:#fffaf4;
+    box-shadow:0 0 20px rgba(201,143,140,.45);
+    font-size:18px;
+}
+
+.playlist-copy{
+    min-width:0;
+}
+
+.playlist-copy strong{
+    display:block;
+    color:#4e3932;
+    font-size:11px;
+    letter-spacing:1.3px;
+    text-transform:uppercase;
+}
+
+.playlist-copy span{
+    display:block;
+    margin-top:4px;
+    color:#92786c;
+    font-size:9px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.playlist-bars{
+    display:flex;
+    gap:2px;
+    align-items:flex-end;
+    height:12px;
+    margin-top:5px;
+}
+
+.playlist-bars i{
+    width:2px;
+    height:5px;
+    background:#c98f8c;
+    animation:reasonBars .8s ease-in-out infinite alternate;
+}
+
+.playlist-bars i:nth-child(2){animation-delay:.15s}
+.playlist-bars i:nth-child(3){animation-delay:.3s}
+
+@keyframes reasonBars{
+    from{height:4px}
+    to{height:12px}
+}
+
+@media(max-width:850px){
+    .reasons-inner{
+        grid-template-columns:1fr;
+    }
+
+    .scratch-wrap{
+        margin-bottom:10px;
+    }
+
+    .reason-showcase{
+        min-height:500px;
+    }
+}
+
+@media(max-width:500px){
+    .reason-showcase{
+        min-height:430px;
+    }
+
+    .polaroid{
+        width:min(330px,88vw);
+        padding:12px 12px 48px;
+    }
+
+    .polaroid-photo{
+        height:315px;
+    }
+
+    .playlist-showpiece{
+        right:0;
+        bottom:2%;
+        width:165px;
+    }
+
+    .scratch-card{
+        min-height:175px;
+    }
+}
+
+/* ================= TIMELINE ================= */
+
+.timeline{
+    background:
+        linear-gradient(rgba(4,12,21,.88),rgba(4,12,21,.9)),
+        url("assets/story-bg.jpg") center/cover fixed;
+}
+
+.timeline-wrap{
+    max-width:1000px;
+    margin:70px auto 0;
+    position:relative;
+}
+
+.timeline-wrap::before{
+    content:"";
+    position:absolute;
+    top:0;
+    bottom:0;
+    left:50%;
+    width:1px;
+    background:rgba(216,180,123,.45);
+}
+
+.event{
+    width:50%;
+    padding:25px 45px;
+    position:relative;
+}
+
+.event:nth-child(odd){
+    text-align:right;
+}
+
+.event:nth-child(even){
+    margin-left:50%;
+}
+
+.event-dot{
+    position:absolute;
+    top:40px;
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    background:var(--gold);
+    box-shadow:0 0 20px var(--gold);
+}
+
+.event:nth-child(odd) .event-dot{
+    right:-6px;
+}
+
+.event:nth-child(even) .event-dot{
+    left:-6px;
+}
+
+.event img{
+    width:min(100%,320px);
+    height:300px;
+    object-fit:contain;
+    object-position:center;
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+    padding:6px;
+    background:#f7efe3;
+    border:1px solid rgba(216,180,123,.45);
+    box-shadow:0 15px 35px rgba(0,0,0,.22);
+}
+
+.event h3{
+    font-family:"Cormorant Garamond",serif;
+    font-size:27px;
+    margin-top:13px;
+}
+
+.event p{
+    color:#aaa;
+    font-size:11px;
+    line-height:1.6;
+    margin-top:6px;
+}
+
+/* ================= FINAL ================= */
+
+.final{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    background:
+        linear-gradient(rgba(3,9,16,.3),rgba(3,9,16,.7)),
+        url("assets/final.jpg") center/cover fixed;
+}
+
+.final-content{
+    max-width:850px;
+}
+
+.final-small{
+    letter-spacing:5px;
+    text-transform:uppercase;
+    color:#d4b57f;
+    font-size:10px;
+}
+
+.final h2{
+    font-family:"Cormorant Garamond",serif;
+    font-size:clamp(60px,10vw,130px);
+    line-height:.8;
+    font-weight:400;
+    margin:25px 0;
+}
+
+.final h2 span{
+    display:block;
+    font-family:Sacramento,cursive;
+    color:#e4b4b4;
+}
+
+.final p{
+    max-width:500px;
+    margin:auto;
+    color:#ddd;
+    line-height:1.8;
+    font-size:13px;
+}
+
+.heart{
+    margin-top:40px;
+    font-size:35px;
+    animation:heartbeat 1.5s infinite;
+}
+
+@keyframes heartbeat{
+    50%{transform:scale(1.2)}
+}
+
+/* ================= BACK TOP ================= */
+
+.back-top{
+    position:fixed;
+    right:25px;
+    bottom:25px;
+    z-index:4000;
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,.2);
+    background:rgba(0,0,0,.4);
+    color:white;
+    cursor:pointer;
+}
+
+/* ================= LIGHTBOX ================= */
+
+.lightbox{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.9);
+    z-index:10000;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:30px;
+}
+
+.lightbox.active{
+    display:flex;
+}
+
+.lightbox img{
+    max-width:90vw;
+    max-height:85vh;
+    object-fit:contain;
+    border:5px solid white;
+}
+
+.close-lightbox{
+    position:absolute;
+    top:25px;
+    right:30px;
+    font-size:35px;
+    color:white;
+    cursor:pointer;
+}
+
+/* ================= PARTICLES ================= */
+
+.particle{
+    position:fixed;
+    pointer-events:none;
+    width:4px;
+    height:4px;
+    border-radius:50%;
+    background:#fff;
+    opacity:.4;
+    z-index:1;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:850px){
+
+    .nav{
+        top:auto;
+        bottom:15px;
+        width:calc(100% - 25px);
+        justify-content:center;
+        overflow-x:auto;
+        transform:translateX(-50%);
+    }
+
+    .nav a{
+        white-space:nowrap;
+        padding:9px 10px;
+        font-size:8px;
+    }
+
+    .music-player{
+        top:18px;
+        bottom:auto;
+        left:15px;
+    }
+
+    section{
+        padding:90px 20px;
+    }
+
+    .hero{
+        padding-left:25px;
+        padding-right:25px;
+        background-attachment:scroll;
+    }
+
+    .hero h1{
+        font-size:clamp(60px,18vw,100px);
+    }
+
+    .hero h1 span{
+        margin-left:15vw;
+    }
+
+    .quality-wrap{
+        grid-template-columns:1fr;
+        gap:40px;
+    }
+
+    .quality-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .quality-card{
+        min-height:190px;
+        padding:20px;
+    }
+
+    .quality-card h3{
+        font-size:22px;
+    }
+
+    .photo-grid{
+        grid-template-columns:repeat(2,1fr);
+        grid-auto-rows:220px;
+    }
+
+    .photo:nth-child(n){
+        grid-column:span 1;
+        grid-row:span 1;
+        transform:none;
+    }
+
+    .photo:nth-child(1){
+        grid-column:span 2;
+        grid-row:span 2;
+    }
+
+    .paper{
+        padding:50px 30px;
+    }
+
+    .paper-title{
+        font-size:45px;
+    }
+
+    .paper p{
+        font-size:18px;
+    }
+
+    .timeline-wrap::before{
+        left:10px;
+    }
+
+    .event,
+    .event:nth-child(even){
+        width:100%;
+        margin-left:0;
+        padding:25px 10px 25px 40px;
+        text-align:left;
+    }
+
+    .event:nth-child(odd) .event-dot,
+    .event:nth-child(even) .event-dot{
+        left:4px;
+        right:auto;
+    }
+
+    .event img{
+        width:100%;
+        height:280px;
+    }
+
+    .world-card{
+        width:220px;
+        height:350px;
+    }
+}
+
+@media(max-width:500px){
+
+    .lock-content h1{
+        font-size:60px;
+    }
+
+    .keypad{
+        width:270px;
+    }
+
+    .quality-grid{
+        grid-template-columns:1fr;
+    }
+
+    .quality-card{
+        min-height:150px;
+    }
+
+    .photo-grid{
+        grid-auto-rows:170px;
+    }
+
+    .reason-card{
+        min-width:250px;
+        width:250px;
+    }
+
+    .final h2{
+        font-size:65px;
+    }
+}
+</style>
+</head>
+
+<body class="locked">
+
+<!-- ================= MUSIC ================= -->
+
+<audio id="music" loop preload="auto">
+    <source src="Sang_Rahiyo.mp3" type="audio/mpeg">
+</audio>
+
+<div class="music-player paused" id="musicPlayer">
+    <button class="music-btn" id="musicBtn">♫</button>
+
+    <div class="music-info">
+        Sang Rahiyo
+        <span id="musicStatus">Paused</span>
+    </div>
+
+    <div class="equalizer">
+        <i></i><i></i><i></i><i></i>
+    </div>
+</div>
+
+<!-- ================= CURSOR ================= -->
+
+<div class="cursor"></div>
+<div class="cursor-dot"></div>
+
+<!-- ================= NAV ================= -->
+
+<nav class="nav">
+    <a href="#home">HOME</a>
+    <a href="#special">SPECIAL</a>
+    <a href="#gallery">GALLERY</a>
+    <a href="#world">HIS WORLD</a>
+    <a href="#letter">LETTER</a>
+    <a href="#story">STORY</a>
+</nav>
+
+<!-- ================= LOCK SCREEN ================= -->
+
+<div id="lockScreen">
+
+    <div class="lock-content">
+
+        <div class="lock-small">
+            A little surprise
+            pass=1234
+        </div>
+
+        <h1>Just For You</h1>
+
+        <p>
+            Enter the secret code to unlock something special ♡
+        </p>
+
+        <div class="keypad">
+
+            <div class="code-display">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+
+            <div class="keys">
+
+                <button class="key" data-number="1">1</button>
+                <button class="key" data-number="2">2</button>
+                <button class="key" data-number="3">3</button>
+
+                <button class="key" data-number="4">4</button>
+                <button class="key" data-number="5">5</button>
+                <button class="key" data-number="6">6</button>
+
+                <button class="key" data-number="7">7</button>
+                <button class="key" data-number="8">8</button>
+                <button class="key" data-number="9">9</button>
+
+                <button class="key" id="clear">←</button>
+                <button class="key" data-number="0">0</button>
+                <button class="key" id="unlock">♡</button>
+
+            </div>
+
+            <div class="lock-error" id="lockError"></div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- ================= HERO ================= -->
+
+<section class="hero" id="home">
+
+    <div class="glow"></div>
+
+    <div class="hero-content">
+
+        <div class="hero-kicker">
+            Boyfriend Day · A little story
+        </div>
+
+        <h1>
+            The Boy
+            <span>Who Feels Like Home.</span>
+        </h1>
+
+        <p class="hero-desc">
+            Not just someone to love.
+            Someone who makes ordinary days softer,
+            difficult days easier, and happy days even happier.
+        </p>
+
+    </div>
+
+    <div class="scroll-hint">
+        Scroll to begin
+        <div class="scroll-line"></div>
+    </div>
+
+</section>
+
+<!-- ================= SPECIAL ================= -->
+
+<section class="qualities" id="special">
+
+    <div class="glow"></div>
+
+    <div class="quality-wrap">
+
+        <div>
+
+            <div class="section-tag">
+                Why you're special
+            </div>
+
+            <h2 class="section-title">
+                More than<br>
+                a <em>boyfriend.</em>
+            </h2>
+
+            <p class="section-sub">
+                There are some people who simply become a
+                beautiful part of your everyday life.
+                The kind of person whose presence feels like
+                comfort.
+            </p>
+
+        </div>
+
+        <div class="quality-grid">
+
+            <div class="quality-card">
+                <div class="q-icon">♡</div>
+                <h3>Caring</h3>
+                <p>
+                    You notice the little things,
+                    remember the tiny details,
+                    and somehow always know when
+                    something is wrong.
+                </p>
+            </div>
+
+            <div class="quality-card">
+                <div class="q-icon">∞</div>
+                <h3>Loyal</h3>
+                <p>
+                    Through good days, bad days,
+                    silence and chaos — you stay.
+                </p>
+            </div>
+
+            <div class="quality-card">
+                <div class="q-icon">✦</div>
+                <h3>Protective</h3>
+                <p>
+                    Not by controlling,
+                    but by making someone feel
+                    safe and cared for.
+                </p>
+            </div>
+
+            <div class="quality-card">
+                <div class="q-icon">☼</div>
+                <h3>Lovable</h3>
+                <p>
+                    Somehow your smile, your habits,
+                    your silly moments — all become
+                    someone's favourite things.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= GALLERY ================= -->
+
+<section class="gallery" id="gallery">
+
+    <div class="gallery-head">
+
+        <div class="section-tag">
+            Little moments
+        </div>
+
+        <h2 class="section-title">
+            Our <em>Gallery</em>
+        </h2>
+
+        <p class="section-sub" style="margin:20px auto 0">
+            Some pictures.
+            Some memories.
+            Some moments that deserve to stay forever.
+        </p>
+
+    </div>
+
+    <div class="photo-grid">
+
+        <div class="photo">
+            <img src="look so mine.jpeg" alt="">
+        </div>
+
+        <div class="photo">
+            <img src="look so mine2.jpeg" alt="">
+        </div>
+
+        <div class="photo">
+            <img src="look so mine3.jpeg" alt="">
+        </div>
+
+        <div class="photo">
+            <img src="look so minee.jpeg" alt="">
+        </div>
+
+        <div class="photo">
+            <img src="pic with music.jpeg" alt="">
+        </div>
+
+        <div class="photo">
+            <img src="tere sang chalu.jpeg" alt="">
+        </div>
+
+        <div class="photo">
+            <img src="look so mine.jpeg" alt="">
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= HIS WORLD ================= -->
+
+<section class="his-world" id="world">
+
+    <div class="world-head">
+
+        <div class="section-tag">
+            His world
+        </div>
+
+        <h2 class="section-title">
+            The boy<br>
+            behind the <em>smile.</em>
+        </h2>
+
+        <p class="section-sub">
+            His random moments.
+            His favourite places.
+            His little world.
+            The person behind all those smiles.
+        </p>
+
+    </div>
+
+    <div class="horizontal-gallery" id="worldGallery">
+
+        <div class="world-card">
+            <img src="boy (1).jpeg">
+            <span>Just him.</span>
+        </div>
+
+        <div class="world-card">
+            <img src="boy (2).jpeg">
+            <span>His smile.</span>
+        </div>
+
+        <div class="world-card">
+            <img src="boy (3).jpeg">
+            <span>His chaos.</span>
+        </div>
+
+        <div class="world-card">
+            <img src="boy (4).jpeg">
+            <span>His vibe.</span>
+        </div>
+
+        <div class="world-card">
+            <img src="boy (5).jpeg">
+            <span>His world.</span>
+        </div>
+
+        <div class="world-card">
+            <img src="boy (6).jpeg">
+            <span>My favourite.</span>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= LETTER ================= -->
+
+<section class="letter" id="letter">
+
+    <div class="paper">
+
+        <div class="paper-title">
+            A little letter...
+        </div>
+
+        <p>
+            To the boy who somehow became such an important
+            part of my everyday life...
+            <br><br>
+
+            Thank you for being caring when things get difficult,
+            patient when things get messy, and lovable even on
+            the most ordinary days.
+            <br><br>
+
+            Thank you for all the little things that may look
+            insignificant to the world but mean so much.
+            The conversations, the laughs, the random moments,
+            the comfort and simply being there.
+            <br><br>
+
+            Some people enter your life and become memories.
+            Some become chapters.
+            And then there are those rare people who start
+            feeling like home.
+            <br><br>
+
+            Happy Boyfriend Day to someone truly special.
+            Keep being exactly the person you are.
+        </p>
+
+        <div class="signature">
+            Always special ♡
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= REASONS ================= -->
+
+<section class="reasons">
+
+    <div class="reasons-inner">
+
+        <div class="reasons-copy">
+
+            <div class="section-tag">
+                Little reasons
+            </div>
+
+            <h2 class="section-title">
+                Reasons to<br>
+                <em>smile.</em>
+            </h2>
+
+            <div class="scratch-wrap">
+                <div class="scratch-card" id="scratchCard" aria-label="Scratch card">
+                    <div class="scratch-message">
+                        <div>
+                            <strong>YOU</strong>
+                            <span>you are the reason of my smile ♡</span>
+                        </div>
+                    </div>
+                    <canvas id="scratchCanvas"></canvas>
+                </div>
+                <div class="scratch-hint">Scratch to reveal a little reason</div>
+            </div>
+
+        </div>
+
+        <div class="reason-showcase">
+
+            <div class="polaroid">
+                <img class="polaroid-photo" src="pic with music.jpeg" alt="A favourite memory">
+                <div class="polaroid-caption">my favourite smile ♡</div>
+            </div>
+
+            <div class="playlist-showpiece" aria-label="Music playlist">
+                <div class="playlist-icon">♫</div>
+                <div class="playlist-copy">
+                    <strong>Now playing</strong>
+                    <span>Sang Rahiyo · our little playlist</span>
+                    <div class="playlist-bars"><i></i><i></i><i></i><i></i></div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= STORY ================= -->
+
+<section class="timeline" id="story">
+
+    <div style="text-align:center">
+
+        <div class="section-tag">
+            Our little story
+        </div>
+
+        <h2 class="section-title">
+            Moments that became <em>memories.</em>
+        </h2>
+
+    </div>
+
+    <div class="timeline-wrap">
+
+        <div class="event">
+
+            <div class="event-dot"></div>
+
+            <img src="story (1).jpeg">
+
+            <h3>The Beginning</h3>
+
+            <p>
+                The moment a normal day slowly became
+                the beginning of something special.
+            </p>
+
+        </div>
+
+        <div class="event">
+
+            <div class="event-dot"></div>
+
+            <img src="story (2).jpeg">
+
+            <h3>Our Favourite Conversations</h3>
+
+            <p>
+                The talks that were supposed to last
+                five minutes somehow lasted hours.
+            </p>
+
+        </div>
+
+        <div class="event">
+
+            <div class="event-dot"></div>
+
+            <img src="story (4).jpeg">
+
+            <h3>The Random Memories</h3>
+
+            <p>
+                The completely unplanned moments
+                that somehow became the best ones.
+            </p>
+
+        </div>
+
+        <div class="event">
+
+            <div class="event-dot"></div>
+
+            <img src="story (3).jpeg">
+
+            <h3>Still Here</h3>
+
+            <p>
+                Different days, different moods,
+                same person making everything brighter.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= FINAL ================= -->
+
+<section class="final">
+
+    <div class="final-content">
+
+        <div class="final-small">
+            To my favourite person
+        </div>
+
+        <h2>
+            Happy
+            <span>Boyfriend Day</span>
+        </h2>
+
+        <p>
+            Thank you for being caring.
+            Thank you for being loyal.
+            Thank you for being lovable.
+            And most importantly,
+            thank you for simply being you.
+        </p>
+
+        <div class="heart">
+            ♡
+        </div>
+
+        <div style="
+            margin-top:30px;
+            font-family:Sacramento,cursive;
+            font-size:30px;
+            color:#dfb8b8;
+        ">
+            Some people feel like home.
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= LIGHTBOX ================= -->
+
+<div class="lightbox" id="lightbox">
+
+    <div class="close-lightbox">×</div>
+
+    <img id="lightboxImage" src="">
+
+</div>
+
+<button class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    ↑
+</button>
+
+<script>
+
+/* =========================================================
+   CONFIG
+========================================================= */
+
+const SECRET_CODE = "1234";
+
+
+/* =========================================================
+   MUSIC SYSTEM
+========================================================= */
+
+const music = document.getElementById("music");
+const musicBtn = document.getElementById("musicBtn");
+const musicPlayer = document.getElementById("musicPlayer");
+const musicStatus = document.getElementById("musicStatus");
+
+let musicStarted = false;
+
+function playMusic(){
+
+    music.volume = 0.45;
+
+    music.play()
+    .then(() => {
+
+        musicStarted = true;
+
+        musicPlayer.classList.remove("paused");
+        musicStatus.textContent = "Playing...";
+
+    })
+    .catch(() => {
+
+        musicStatus.textContent = "Tap to play";
+
+    });
+}
+
+function pauseMusic(){
+
+    music.pause();
+
+    musicPlayer.classList.add("paused");
+
+    musicStatus.textContent = "Paused";
+}
+
+musicBtn.addEventListener("click", () => {
+
+    if(music.paused){
+
+        playMusic();
+
+    }else{
+
+        pauseMusic();
+
+    }
+
+});
+
+document.addEventListener("click", () => {
+
+    if(!musicStarted){
+
+        playMusic();
+
+    }
+
+}, {once:true});
+
+
+/* glowing nav active state */
+
+const navLinks = document.querySelectorAll(".nav a");
+const navSections = document.querySelectorAll("section[id]");
+
+function updateNavActive(){
+    let current = "home";
+
+    navSections.forEach(section=>{
+        const top = section.getBoundingClientRect().top;
+        if(top <= window.innerHeight * .35) current = section.id;
+    });
+
+    navLinks.forEach(link=>{
+        link.classList.toggle("active",link.getAttribute("href") === "#" + current);
+    });
+}
+
+window.addEventListener("scroll",updateNavActive,{passive:true});
+updateNavActive();
+
+/* =========================================================
+   KEYPAD
+========================================================= */
+
+const lockScreen = document.getElementById("lockScreen");
+const error = document.getElementById("lockError");
+const dots = document.querySelectorAll(".dot");
+
+let enteredCode = "";
+
+document.querySelectorAll(".key[data-number]").forEach(key => {
+
+    key.addEventListener("click", () => {
+
+        if(enteredCode.length >= 4) return;
+
+        enteredCode += key.dataset.number;
+
+        updateDots();
+
+    });
+
+});
+
+function updateDots(){
+
+    dots.forEach((dot,index) => {
+
+        dot.classList.toggle(
+            "active",
+            index < enteredCode.length
+        );
+
+    });
+
+}
+
+document.getElementById("clear").addEventListener("click", () => {
+
+    enteredCode = enteredCode.slice(0,-1);
+
+    updateDots();
+
+    error.textContent = "";
+
+});
+
+document.getElementById("unlock").addEventListener("click", unlock);
+
+function unlock(){
+
+    if(enteredCode === SECRET_CODE){
+
+        error.textContent = "";
+
+        playMusic();
+
+        gsap.to(lockScreen,{
+            opacity:0,
+            scale:1.08,
+            duration:1.2,
+            ease:"power3.inOut",
+            onComplete:() => {
+
+                lockScreen.style.display = "none";
+
+                document.body.classList.remove("locked");
+
+                startIntro();
+
+            }
+        });
+
+    }else{
+
+        error.textContent = "Hmm... that's not the secret code ♡";
+
+        gsap.fromTo(
+            ".keypad",
+            {x:-8},
+            {
+                x:8,
+                duration:.08,
+                repeat:5,
+                yoyo:true,
+                clearProps:"x"
+            }
+        );
+
+        enteredCode = "";
+
+        updateDots();
+
+    }
+
+}
+
+
+/* =========================================================
+   INTRO ANIMATION
+========================================================= */
+
+function startIntro(){
+
+    const tl = gsap.timeline();
+
+    tl.from(".hero-kicker",{
+        y:30,
+        opacity:0,
+        duration:1
+    })
+    .from(".hero h1",{
+        y:70,
+        opacity:0,
+        duration:1.2,
+        ease:"power4.out"
+    },"-=.5")
+    .from(".hero-desc",{
+        y:30,
+        opacity:0,
+        duration:1
+    },"-=.5")
+    .from(".scroll-hint",{
+        opacity:0,
+        duration:1
+    },"-=.3");
+
+}
+
+
+/* =========================================================
+   GSAP SCROLL
+========================================================= */
+
+gsap.registerPlugin(ScrollTrigger);
+
+
+/* qualities */
+
+gsap.from(".quality-card",{
+
+    scrollTrigger:{
+        trigger:".quality-grid",
+        start:"top 80%"
+    },
+
+    y:70,
+    opacity:0,
+    duration:1,
+    stagger:.15,
+    ease:"power3.out"
+
+});
+
+
+/* gallery */
+
+gsap.from(".photo",{
+
+    scrollTrigger:{
+        trigger:".photo-grid",
+        start:"top 80%"
+    },
+
+    scale:.75,
+    opacity:0,
+    rotation:0,
+    duration:1,
+    stagger:.1,
+    ease:"back.out(1.4)"
+
+});
+
+
+/* his world */
+
+gsap.from(".world-card",{
+
+    scrollTrigger:{
+        trigger:".his-world",
+        start:"top 80%"
+    },
+
+    y:100,
+    opacity:0,
+    duration:1,
+    stagger:.12,
+    ease:"power3.out"
+
+});
+
+
+/* letter */
+
+gsap.from(".paper",{
+
+    scrollTrigger:{
+        trigger:".letter",
+        start:"top 70%"
+    },
+
+    y:100,
+    opacity:0,
+    rotation:5,
+    duration:1.4,
+    ease:"power3.out"
+
+});
+
+
+
+
+
+/* =========================================================
+   SCRATCH CARD
+========================================================= */
+
+const scratchCard = document.getElementById("scratchCard");
+const scratchCanvas = document.getElementById("scratchCanvas");
+const scratchCtx = scratchCanvas.getContext("2d");
+let scratching = false;
+
+function setupScratchCard(){
+
+    const rect = scratchCard.getBoundingClientRect();
+    const dpr = Math.max(1, window.devicePixelRatio || 1);
+
+    scratchCanvas.width = Math.floor(rect.width * dpr);
+    scratchCanvas.height = Math.floor(rect.height * dpr);
+    scratchCanvas.style.width = rect.width + "px";
+    scratchCanvas.style.height = rect.height + "px";
+
+    scratchCtx.setTransform(dpr,0,0,dpr,0,0);
+    scratchCtx.globalCompositeOperation = "source-over";
+
+    const gradient = scratchCtx.createLinearGradient(0,0,rect.width,rect.height);
+    gradient.addColorStop(0,"#d4a69f");
+    gradient.addColorStop(.5,"#c58f8b");
+    gradient.addColorStop(1,"#a96f6f");
+    scratchCtx.fillStyle = gradient;
+    scratchCtx.fillRect(0,0,rect.width,rect.height);
+
+    scratchCtx.fillStyle = "rgba(255,250,241,.2)";
+    scratchCtx.font = "600 12px Inter, sans-serif";
+    scratchCtx.textAlign = "center";
+    scratchCtx.fillText("SCRATCH ME ♡",rect.width/2,rect.height/2);
+}
+
+function scratchAt(clientX,clientY){
+
+    const rect = scratchCanvas.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+
+    scratchCtx.save();
+    scratchCtx.globalCompositeOperation = "destination-out";
+    scratchCtx.beginPath();
+    scratchCtx.arc(x,y,24,0,Math.PI*2);
+    scratchCtx.fill();
+    scratchCtx.restore();
+}
+
+scratchCanvas.addEventListener("pointerdown",e=>{
+    scratching = true;
+    scratchCanvas.setPointerCapture?.(e.pointerId);
+    scratchAt(e.clientX,e.clientY);
+});
+
+scratchCanvas.addEventListener("pointermove",e=>{
+    if(scratching) scratchAt(e.clientX,e.clientY);
+});
+
+scratchCanvas.addEventListener("pointerup",()=>scratching=false);
+scratchCanvas.addEventListener("pointercancel",()=>scratching=false);
+
+setupScratchCard();
+window.addEventListener("resize",setupScratchCard);
+
+/* timeline */
+
+gsap.from(".event",{
+
+    scrollTrigger:{
+        trigger:".timeline-wrap",
+        start:"top 75%"
+    },
+
+    opacity:0,
+    y:80,
+    duration:1,
+    stagger:.3
+
+});
+
+
+/* final */
+
+gsap.from(".final-content",{
+
+    scrollTrigger:{
+        trigger:".final",
+        start:"top 70%"
+    },
+
+    scale:.8,
+    opacity:0,
+    duration:1.5,
+    ease:"power3.out"
+
+});
+
+
+/* =========================================================
+   AUTO HORIZONTAL HIS-WORLD ANIMATION
+========================================================= */
+
+const worldGallery = document.getElementById("worldGallery");
+
+let worldTween;
+
+function createWorldAnimation(){
+
+    if(window.innerWidth > 700){
+
+        worldTween = gsap.to(worldGallery,{
+
+            x:() =>
+                -(worldGallery.scrollWidth - window.innerWidth + 100),
+
+            duration:35,
+
+            ease:"none",
+
+            repeat:-1,
+
+            yoyo:true
+
+        });
+
+    }
+
+}
+
+createWorldAnimation();
+
+
+/* =========================================================
+   IMAGE LIGHTBOX
+========================================================= */
+
+const lightbox = document.getElementById("lightbox");
+const lightboxImage = document.getElementById("lightboxImage");
+
+document.querySelectorAll(".photo img,.reason-card img,.event img").forEach(img => {
+
+    img.addEventListener("click", () => {
+
+        lightboxImage.src = img.src;
+
+        lightbox.classList.add("active");
+
+    });
+
+});
+
+document.querySelector(".close-lightbox").addEventListener("click", () => {
+
+    lightbox.classList.remove("active");
+
+});
+
+lightbox.addEventListener("click",(e)=>{
+
+    if(e.target === lightbox){
+
+        lightbox.classList.remove("active");
+
+    }
+
+});
+
+
+/* =========================================================
+   CUSTOM CURSOR
+========================================================= */
+
+const cursor = document.querySelector(".cursor");
+const cursorDot = document.querySelector(".cursor-dot");
+
+document.addEventListener("mousemove",(e)=>{
+
+    gsap.to(cursor,{
+        x:e.clientX,
+        y:e.clientY,
+        duration:.15
+    });
+
+    gsap.to(cursorDot,{
+        x:e.clientX,
+        y:e.clientY,
+        duration:.03
+    });
+
+});
+
+document.querySelectorAll("a,button,.photo,.reason-card,.world-card").forEach(el=>{
+
+    el.addEventListener("mouseenter",()=>{
+
+        cursor.style.width="35px";
+        cursor.style.height="35px";
+        cursor.style.background="rgba(255,255,255,.15)";
+
+    });
+
+    el.addEventListener("mouseleave",()=>{
+
+        cursor.style.width="18px";
+        cursor.style.height="18px";
+        cursor.style.background="transparent";
+
+    });
+
+});
+
+
+/* =========================================================
+   FLOATING PARTICLES
+========================================================= */
+
+for(let i=0;i<45;i++){
+
+    const p = document.createElement("div");
+
+    p.className = "particle";
+
+    p.style.left = Math.random()*100 + "%";
+    p.style.top = Math.random()*100 + "%";
+
+    document.body.appendChild(p);
+
+    gsap.to(p,{
+
+        y:-100-Math.random()*250,
+        x:(Math.random()-.5)*100,
+        opacity:0,
+
+        duration:5+Math.random()*7,
+
+        repeat:-1,
+
+        delay:Math.random()*5,
+
+        ease:"none"
+
+    });
+
+}
+
+
+/* =========================================================
+   PARALLAX BACKGROUND
+========================================================= */
+
+window.addEventListener("mousemove",(e)=>{
+
+    const x = (e.clientX/window.innerWidth-.5)*10;
+    const y = (e.clientY/window.innerHeight-.5)*10;
+
+    gsap.to(".hero",{
+        backgroundPosition:
+            `calc(50% + ${x}px) calc(50% + ${y}px)`,
+        duration:1
+    });
+
+});
+
+
+/* =========================================================
+   REVEAL SECTION TITLES
+========================================================= */
+
+document.querySelectorAll(".section-title").forEach(title=>{
+
+    gsap.from(title,{
+
+        scrollTrigger:{
+            trigger:title,
+            start:"top 85%"
+        },
+
+        y:70,
+        opacity:0,
+        duration:1.2,
+        ease:"power3.out"
+
+    });
+
+});
+
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+window.addEventListener("resize",()=>{
+
+    if(worldTween){
+
+        worldTween.kill();
+
+        worldTween=null;
+
+    }
+
+    if(window.innerWidth > 700){
+
+        createWorldAnimation();
+
+    }
+
+});
+
+
+/* =========================================================
+   KEYBOARD CODE SUPPORT
+========================================================= */
+
+document.addEventListener("keydown",(e)=>{
+
+    if(lockScreen.style.display === "none") return;
+
+    if(/[0-9]/.test(e.key)){
+
+        if(enteredCode.length < 4){
+
+            enteredCode += e.key;
+
+            updateDots();
+
+        }
+
+    }
+
+    if(e.key === "Backspace"){
+
+        enteredCode = enteredCode.slice(0,-1);
+
+        updateDots();
+
+    }
+
+    if(e.key === "Enter"){
+
+        unlock();
+
+    }
+
+});
+
+
+/* =========================================================
+   PREVENT BROKEN IMAGE LOOK
+========================================================= */
+
+document.querySelectorAll("img").forEach(img=>{
+
+    img.addEventListener("error",()=>{
+
+        img.style.background =
+            "linear-gradient(135deg,#172536,#38252b)";
+
+    });
+
+});
+
+</script>
+
+</body>
+</html>

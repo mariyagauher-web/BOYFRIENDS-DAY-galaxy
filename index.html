@@ -231,8 +231,7 @@ button{
     to{box-shadow:0 0 18px rgba(216,180,123,.42),0 0 45px rgba(216,180,123,.20),inset 0 0 20px rgba(255,255,255,.06)}
 }
 
-<<<<<<< HEAD
-=======
+
 
 /* ================= SPECIAL CUTOUT ================= */
 /*
@@ -268,7 +267,6 @@ button{
     50%{transform:translate(-50%,calc(-50% - 8px)) rotate(-1deg);}
 }
 
->>>>>>> 334a089 (cut out add kiya)
 /* ================= GLOBAL ================= */
 
 section{
@@ -1240,8 +1238,8 @@ section{
         gap:40px;
     }
 
-<<<<<<< HEAD
-=======
+
+
     .special-cutout{
         width:min(78vw,330px);
         max-width:none;
@@ -1251,7 +1249,7 @@ section{
         opacity:.94;
     }
 
->>>>>>> 334a089 (cut out add kiya)
+
     .quality-grid{
         grid-template-columns:1fr 1fr;
     }
@@ -1324,14 +1322,14 @@ section{
 
 @media(max-width:500px){
 
-<<<<<<< HEAD
-=======
+
+
     .special-cutout{
         width:min(82vw,300px);
         top:55%;
     }
 
->>>>>>> 334a089 (cut out add kiya)
+
     .lock-content h1{
         font-size:60px;
     }
@@ -1492,11 +1490,10 @@ section{
 
     <div class="glow"></div>
 
-<<<<<<< HEAD
-=======
+
     <img class="special-cutout" src="as-cutout.png" alt="" aria-hidden="true">
 
->>>>>>> 334a089 (cut out add kiya)
+
     <div class="quality-wrap">
 
         <div>
@@ -2334,24 +2331,34 @@ let worldTween;
 
 function createWorldAnimation(){
 
-    if(window.innerWidth > 700){
+    if(!worldGallery) return;
+
+    // Wait until the images/cards have their real dimensions.
+    requestAnimationFrame(() => {
+
+        const galleryWidth = worldGallery.scrollWidth;
+        const viewportWidth = worldGallery.parentElement.clientWidth;
+
+        // On phones the old code disabled the animation completely.
+        // Calculate the real distance available on every device.
+        const maxMove = Math.max(0, galleryWidth - viewportWidth);
+
+        if(maxMove <= 0) return;
+
+        // Slightly faster on mobile so the movement remains visible,
+        // while keeping the desktop animation smooth and cinematic.
+        const duration = window.innerWidth <= 700 ? 28 : 35;
 
         worldTween = gsap.to(worldGallery,{
-
-            x:() =>
-                -(worldGallery.scrollWidth - window.innerWidth + 100),
-
-            duration:35,
-
+            x:-maxMove,
+            duration:duration,
             ease:"none",
-
             repeat:-1,
-
-            yoyo:true
-
+            yoyo:true,
+            repeatDelay:0
         });
 
-    }
+    });
 
 }
 
@@ -2522,16 +2529,11 @@ window.addEventListener("resize",()=>{
     if(worldTween){
 
         worldTween.kill();
-
         worldTween=null;
 
     }
 
-    if(window.innerWidth > 700){
-
-        createWorldAnimation();
-
-    }
+    createWorldAnimation();
 
 });
 
@@ -2589,10 +2591,5 @@ document.querySelectorAll("img").forEach(img=>{
 });
 
 </script>
-
 </body>
-<<<<<<< HEAD
 </html>
-=======
-</html>
->>>>>>> 334a089 (cut out add kiya)
